@@ -1,0 +1,11 @@
+<?php
+
+namespace {%namespace%};
+
+use think\Model;
+use think\Db\Query;
+
+class {%className%} extends GenerateModel
+{
+    //
+}

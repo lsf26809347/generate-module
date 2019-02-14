@@ -1,0 +1,65 @@
+<?php
+
+namespace {%namespace%};
+
+use think\Controller;
+use think\Request;
+
+class {%className%} extends Controller
+{
+    /**
+     * 显示资源列表
+     */
+    public function index{%actionSuffix%}()
+    {
+        //
+    }
+
+    /**
+     * 显示创建资源表单页.
+     */
+    public function create{%actionSuffix%}()
+    {
+        //
+    }
+
+    /**
+     * 保存新建的资源
+     */
+    public function save{%actionSuffix%}(Request $request)
+    {
+        //
+    }
+
+    /**
+     * 显示指定的资源
+     */
+    public function read{%actionSuffix%}($id)
+    {
+        //
+    }
+
+    /**
+     * 显示编辑资源表单页.
+     */
+    public function edit{%actionSuffix%}($id)
+    {
+        //
+    }
+
+    /**
+     * 保存更新的资源
+     */
+    public function update{%actionSuffix%}(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * 删除指定资源
+     */
+    public function delete{%actionSuffix%}($id)
+    {
+        //
+    }
+}

@@ -1,0 +1,109 @@
+<?php
+
+namespace {%namespace%};
+
+use think\Controller;
+use think\Request;
+use {%modelClass%} as {%className%}Model;
+
+class {%className%} extends {%extends%}
+{
+    /**
+     * 显示资源列表
+     * @param {%className%}Model ${%className%}Model
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
+    public function index{%actionSuffix%}({%className%}Model ${%className%}Model)
+    {
+        $list = ${%className%}Model->getList();
+
+        return $this->fetch('',['list'=>$list]);
+    }
+
+    /**
+     * 显示创建资源表单页.
+     * @return \think\Response
+     */
+    public function create()
+    {
+        return $this->fetch('',['title' => '添加','action' => url('{%moduleName%}/{%className%}/save')]);
+    }
+
+    /**
+     * 保存新建的资源
+     * @param Request $request
+     * @param {%className%}Model ${%className%}Model
+     */
+    public function save(Request $request,{%className%}Model ${%className%}Model)
+    {
+        $param = $request->param();
+        $result = $this->validate($param,'app\common\validate\{%className%}');
+        if($result !== true){
+            $this->error($result);
+        }
+        ${%className%}Model->allowField(true)->save($param);
+        $this->success('添加成功',url('{%moduleName%}/{%className%}/index'));
+    }
+
+    /**
+     * 显示编辑资源表单页.
+     * @param $id
+     * @return mixed
+     */
+    public function edit($id)
+    {
+        $info = {%className%}Model::find($id);
+        return $this->fetch('create',['info' => $info,'title' => '编辑','action' => url('{%moduleName%}/{%className%}/update')]);
+    }
+
+    /**
+     * 保存更新的资源
+     * @param Request $request
+     * @param $id
+     */
+    public function update(Request $request, $id)
+    {
+        $info = {%className%}Model::find($id);
+        $param = $request->param();
+        if(!isset($param['show'])) $param['show'] = 0;
+        $result = $this->validate($param,'app\common\validate\{%className%}.edit');
+        if($result !== true){
+            $this->error($result);
+        }
+        //编辑时检查字段（默认title）是否跟非本条数据外的数据重复
+        /*if((new {%className%}Model())->checkUnique($param)){
+            $this->error('已经存在');
+        }*/
+        $info->allowField(true)->save($param);
+        $this->success('保存成功',url('{%moduleName%}/{%className%}/index'));
+    }
+
+    /**
+     * 删除指定资源
+     * @param $id
+     */
+    public function delete($id)
+    {
+        $info = {%className%}Model::find($id);
+        $info->delete();
+        $this->success('删除成功');
+    }
+
+    /**
+     * 状态切换切换 默认字段为status  如没有可以删除本段代码
+     * @param $id
+     * @param {%className%}Model ${%className%}Model
+     * @return array
+     */
+    public function toggleShow($id,{%className%}Model ${%className%}Model)
+    {
+        $status = input('Status');
+
+        $data=[
+            "status"=>$status
+        ];
+        ${%className%}Model->update($data,['id'=>$id]);
+        $this->success('更新成功');
+    }
+}

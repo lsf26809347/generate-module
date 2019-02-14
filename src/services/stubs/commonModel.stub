@@ -1,0 +1,115 @@
+<?php
+
+namespace {%namespace%};
+
+use think\Model;
+use think\Db\Query;
+
+class GenerateModel extends {%extends%}
+{
+    //开启时间自动填充
+	protected $autoWriteTimestamp = true;
+    
+    /**
+     * 通用获取数据列表
+     * @param array $where
+     * @return \think\Paginator
+     * @throws \think\exception\DbException
+     */
+	public function getList($where = [])
+	{
+		return $this->where(function($query) use ($where){
+			$this->makeQuery($query);
+			if($where){
+			    foreach ($where as $key=>$value){
+			        $query->where($key,$value);
+                }
+            }
+		})->order($this->orderBy())
+			->paginate(['query' => getQueryParam(),'list_rows' => config('list_rows')]);
+	}
+    
+    /**
+     * 获取有关联模型的数据
+     * @param array $with
+     * @param array $where
+     * @return \think\Paginator
+     * @throws \think\exception\DbException
+     */
+    public function getListWith($with=[],$where=[])
+    {
+        return $this->with($with)->where(function($query) use ($where){
+            $this->makeQuery($query);
+            if($where){
+                foreach ($where as $key=>$value){
+                    $query->where($key,$value);
+                }
+            }
+        })->order($this->orderBy())
+            ->paginate(['query' => getQueryParam(),'list_rows' => config('list_rows')]);
+    }
+    
+    /**
+     * 获取所有数据 用于无须分页的数据
+     * @param string $field
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+	public function getAllData($field='*')
+	{
+		return $this->field($field)->where(function($query){
+			$this->makeQuery($query);
+		})->order($this->orderBy())->select()->toArray();
+	}
+    
+    /**
+     * 排序，默认id 倒序
+     * @param array $order
+     * @return array
+     */
+	protected function orderBy($order=[]){
+		$order_by=input('order_by','id');
+		$order_direction=input('order_direction','DESC');
+		return array_merge([$order_by => $order_direction],$order);
+	}
+    
+    /**
+     * 查询条件
+     * 默认支持时间查询
+     * @param Query $query
+     */
+	protected function makeQuery(Query &$query){
+		//开始时间
+		$timeScope = input('timeScope');
+		if($timeScope){
+			$timeArr  = explode('~',$timeScope);
+			list($timeFrom,$timeTo) = $timeArr;
+		}
+		if (isset($timeFrom)) {
+			$query->whereTime('create_time', '>=', trim($timeFrom));
+		}
+		//结束时间
+		if (isset($timeTo)) {
+			$query->whereTime('create_time', '<=', trim($timeTo));
+		}
+	}
+
+	/**
+	 * 检查某个字段是否与非自己的重复
+	 * @param $param
+	 * @param string $field
+	 * @return bool
+	 * @throws \think\db\exception\DataNotFoundException
+	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws \think\exception\DbException
+	 */
+	public function checkUnique($param,$field='title')
+	{
+		$rs = $this->where('id','neq' , $param['id'])->where($field,$param[$field])->find();
+		return empty($rs) ? false : true;
+	}
+
+
+}
