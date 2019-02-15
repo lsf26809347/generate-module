@@ -1,6 +1,6 @@
 {
     "name": "lsf26809347/thinkphp-gii",
-    "description": "auto create model and controller files when u excute php think thinkphp-gii:xxx",
+    "description": "auto create model and controller files when u excute php think generate:module xxx {--controllerExtend XXX --modelExtend XXX}",
     "type": "library",
     "license": "MIT",
     "authors": [
