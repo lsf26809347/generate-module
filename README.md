@@ -1,11 +1,11 @@
 # thinkphp-gii
-##自动生成简单的增删改查代码
-##安装
+## 自动生成简单的增删改查代码
+## 安装
 ```
 composer require lsf26809347/thinkphp-gii
 ```
-##命令
-####基础命令
+## 命令
+#### 基础命令
 ```
 php think generate:module {module/}Index
 ```
@@ -17,7 +17,7 @@ php think generate:module Index/Index
 - application/Index/Controller目录下生成Index.php;
 - application/Index/Model目录下生成GenerateModel.php、Index.php，Index模型类自动继承自GenerateModel;
 - application/Index/Validate目录下生成Index.php。
-####参数
+#### 参数
 可以在基础命令后添加参数，来指定控制器与模型的继承类
 ```
 php think generate:module Index/Index --controllerExtend Common --modelExtend  Base
